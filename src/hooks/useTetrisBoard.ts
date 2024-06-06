@@ -1,5 +1,5 @@
-import { Block, BlockShape, BoardShape, EmptyCell, SHAPES } from '../types.ts';
 import { Dispatch, useReducer } from 'react';
+import { Block, BlockShape, BoardShape, EmptyCell, SHAPES } from '../types.ts';
 
 export type BoardState = {
   board: BoardShape;
@@ -43,12 +43,16 @@ export function getRandomBlock(): Block {
 
 type Action = {
   type: 'start' | 'drop' | 'commit' | 'move';
+  newBoard?: BoardShape;
+  newBlock?: Block;
 };
 
 function boardReducer(state: BoardState, action: Action): BoardState {
+  const newState = { ...state };
+
   switch (action.type) {
     case 'start':
-      const firstBlock = getRandomBlock();
+      const firstBlock = action.newBlock || getRandomBlock();
       return {
         board: getEmptyBoard(),
         droppingRow: 0,
@@ -57,16 +61,42 @@ function boardReducer(state: BoardState, action: Action): BoardState {
         droppingShape: SHAPES[firstBlock].shape,
       };
     case 'drop':
-      const newStateDrop = { ...state };
-      newStateDrop.droppingRow++;
-      return newStateDrop;
+      newState.droppingRow++;
+      return newState;
     case 'commit':
-      return { ...state };
-    case 'move':
+      const newBlock = action.newBlock || getRandomBlock();
+      return {
+        board: action.newBoard || state.board,
+        droppingRow: 0,
+        droppingColumn: 3,
+        droppingBlock: newBlock,
+        droppingShape: SHAPES[newBlock].shape,
+      };
+    case 'move': {
       const newStateMove = { ...state };
       // Implement move logic here, then return updated state
       return newStateMove;
+    }
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
+}
+
+export function hasCollisions(board: BoardShape, currentShape: BlockShape, row: number, column: number): boolean {
+  let hasCollision = false;
+  currentShape
+    .filter((shapeRow) => shapeRow.some((isSet) => isSet))
+    .forEach((shapeRow: boolean[], rowIndex: number) => {
+      shapeRow.forEach((isSet: boolean, colIndex: number) => {
+        if (
+          isSet &&
+          (row + rowIndex >= board.length ||
+            column + colIndex >= board[0].length ||
+            board[row + rowIndex][column + colIndex] !== EmptyCell.Empty)
+        ) {
+          hasCollision = true;
+        }
+      });
+    });
+  return hasCollision;
 }
