@@ -6,6 +6,7 @@ interface Props {
   dispatchBoardState: Dispatch<Action>;
   setTickSpeed: (speed: number) => void;
 }
+
 enum TickSpeed {
   Normal = 800,
   Sliding = 100,
@@ -50,38 +51,41 @@ export function useControls({ isPlaying, dispatchBoardState, setTickSpeed }: Pro
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) return;
-      if (event.key === 'ArrowDown') {
-        setTickSpeed(TickSpeed.Fast);
-      }
-
-      if (event.key === 'ArrowUp') {
-        dispatchBoardState({ type: 'move', isRotating: true });
-      }
-
-      if (event.key === 'ArrowLeft') {
-        isPressingLeft = true;
-        updateMovementInterval();
-      }
-
-      if (event.key === 'ArrowRight') {
-        isPressingRight = true;
-        updateMovementInterval();
+      switch (event.key) {
+        case 'ArrowDown':
+          setTickSpeed(TickSpeed.Fast);
+          break;
+        case 'ArrowUp':
+          dispatchBoardState({ type: 'move', isRotating: true });
+          break;
+        case 'ArrowLeft':
+          isPressingLeft = true;
+          updateMovementInterval();
+          break;
+        case 'ArrowRight':
+          isPressingRight = true;
+          updateMovementInterval();
+          break;
+        default:
+          break;
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowDown') {
-        setTickSpeed(TickSpeed.Normal);
-      }
-
-      if (event.key === 'ArrowLeft') {
-        isPressingLeft = false;
-        updateMovementInterval();
-      }
-
-      if (event.key === 'ArrowRight') {
-        isPressingRight = false;
-        updateMovementInterval();
+      switch (event.key) {
+        case 'ArrowDown':
+          setTickSpeed(TickSpeed.Normal);
+          break;
+        case 'ArrowLeft':
+          isPressingLeft = false;
+          updateMovementInterval();
+          break;
+        case 'ArrowRight':
+          isPressingRight = false;
+          updateMovementInterval();
+          break;
+        default:
+          break;
       }
     };
 
