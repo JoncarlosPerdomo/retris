@@ -6,7 +6,7 @@ import { Button } from './components/ui/button.tsx';
 import { useTetris } from './hooks/useTetris.ts';
 
 function App() {
-  const { board, startGame, isPlaying, score } = useTetris();
+  const { board, startGame, isPlaying, score, moveLeft, moveRight, moveDown, stopMoveDown, rotate } = useTetris();
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -23,17 +23,17 @@ function App() {
             <Space />
           </Button>
           <div className="flex flex-col items-center space-y-2">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={rotate}>
               <ChevronUp />
             </Button>
             <div className="flex space-x-2">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={moveLeft}>
                 <ChevronLeft />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onMouseDown={moveDown} onMouseUp={stopMoveDown}>
                 <ChevronDown />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={moveRight}>
                 <ChevronRight />
               </Button>
             </div>

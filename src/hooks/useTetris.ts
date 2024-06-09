@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Block, BlockShape, BoardShape, EmptyCell, SHAPES } from '../types.ts';
+import { useControls } from './useControls.ts';
 import { useInterval } from './useInterval.ts';
 import { getRandomBlock, hasCollisions, useTetrisBoard } from './useTetrisBoard.ts';
 
@@ -77,72 +78,13 @@ export function useTetris() {
     gameTick();
   }, tickSpeed);
 
+  const controls = useControls({ isPlaying, dispatchBoardState, setTickSpeed });
+
   const renderedBoard = structuredClone(board) as BoardShape;
 
   if (isPlaying) {
     addShapeToBoard(renderedBoard, droppingBlock, droppingShape, droppingRow, droppingColumn);
   }
-
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    let isPressingLeft = false;
-    let isPressingRight = false;
-    let moveIntervalID: number | undefined;
-
-    const updateMovementInterval = () => {
-      clearInterval(moveIntervalID);
-      dispatchBoardState({ type: 'move', isPressingLeft, isPressingRight });
-      moveIntervalID = setInterval(() => {
-        dispatchBoardState({ type: 'move', isPressingLeft, isPressingRight });
-      }, 300);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.repeat) return;
-      if (event.key === 'ArrowDown') {
-        setTickSpeed(TickSpeed.Fast);
-      }
-
-      if (event.key === 'ArrowUp') {
-        dispatchBoardState({ type: 'move', isRotating: true });
-      }
-
-      if (event.key === 'ArrowLeft') {
-        isPressingLeft = true;
-        updateMovementInterval();
-      }
-
-      if (event.key === 'ArrowRight') {
-        isPressingRight = true;
-        updateMovementInterval();
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowDown') {
-        setTickSpeed(TickSpeed.Normal);
-      }
-
-      if (event.key === 'ArrowLeft') {
-        isPressingLeft = false;
-        updateMovementInterval();
-      }
-
-      if (event.key === 'ArrowRight') {
-        isPressingRight = false;
-        updateMovementInterval();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-      setTickSpeed(TickSpeed.Normal);
-    };
-  }, [isPlaying, dispatchBoardState]);
 
   function addShapeToBoard(
     board: BoardShape,
@@ -168,6 +110,7 @@ export function useTetris() {
     isPlaying,
     score,
     upcomingBlocks,
+    ...controls,
   };
 }
 
