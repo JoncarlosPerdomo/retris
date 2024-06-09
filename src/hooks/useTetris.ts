@@ -15,7 +15,6 @@ export function useTetris() {
   const [isCommitting, setIsCommitting] = useState(false);
   const [tickSpeed, setTickSpeed] = useState<TickSpeed | null>(null);
   const [upcomingBlocks, setUpcomingBlocks] = useState<Block[]>([]);
-
   const [{ board, droppingRow, droppingColumn, droppingBlock, droppingShape }, dispatchBoardState] = useTetrisBoard();
 
   const startGame = useCallback(() => {
@@ -143,7 +142,7 @@ export function useTetris() {
       document.removeEventListener('keyup', handleKeyUp);
       setTickSpeed(TickSpeed.Normal);
     };
-  }, [isPlaying]);
+  }, [isPlaying, dispatchBoardState]);
 
   function addShapeToBoard(
     board: BoardShape,
