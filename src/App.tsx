@@ -10,16 +10,16 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="gap- flex h-screen flex-col items-center">
+      <div className="flex h-screen w-screen flex-col items-center">
         <div className="h-1/16 flex items-center justify-between p-4">
           <p>Score: {score}</p>
           {!isPlaying && <Button onClick={startGame}>Start Game</Button>}
           <ModeToggle />
         </div>
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-grow items-center justify-center">
           <Board currentBoard={board} />
         </div>
-        <div className="h-4/16 flex items-center justify-around p-4">
+        <div className="h-4/16 flex w-full items-center justify-around pb-4 pt-1">
           <Button variant="outline" size="icon">
             <Space />
           </Button>
