@@ -1,12 +1,18 @@
-import { useCallback, useEffect } from 'react';
+import { Dispatch, useCallback, useEffect } from 'react';
+import { Action } from './useTetrisBoard';
 
+interface Props {
+  isPlaying: boolean;
+  dispatchBoardState: Dispatch<Action>;
+  setTickSpeed: (speed: number) => void;
+}
 enum TickSpeed {
   Normal = 800,
   Sliding = 100,
   Fast = 50,
 }
 
-export function useControls({ isPlaying, dispatchBoardState, setTickSpeed }) {
+export function useControls({ isPlaying, dispatchBoardState, setTickSpeed }: Props) {
   const moveLeft = useCallback(() => {
     dispatchBoardState({ type: 'move', isPressingLeft: true });
   }, [dispatchBoardState]);
@@ -32,7 +38,7 @@ export function useControls({ isPlaying, dispatchBoardState, setTickSpeed }) {
 
     let isPressingLeft = false;
     let isPressingRight = false;
-    let moveIntervalID: number | undefined;
+    let moveIntervalID: NodeJS.Timeout;
 
     const updateMovementInterval = () => {
       clearInterval(moveIntervalID);

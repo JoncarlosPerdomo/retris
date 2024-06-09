@@ -42,7 +42,7 @@ export function getRandomBlock(): Block {
   return blocks[Math.floor(Math.random() * blocks.length)];
 }
 
-type Action = {
+export type Action = {
   type: 'start' | 'drop' | 'commit' | 'move';
   newBoard?: BoardShape;
   newBlock?: Block;
