@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Block, BlockShape, BoardShape, EmptyCell } from '../types.ts';
+import { Block, BlockShape, BoardShape, EmptyCell, SHAPES } from '../types.ts';
 import { useInterval } from './useInterval.ts';
 import { getRandomBlock, hasCollisions, useTetrisBoard } from './useTetrisBoard.ts';
 
@@ -47,6 +47,13 @@ export function useTetris() {
     const newUpcomingBlocks = structuredClone(upcomingBlocks) as Block[];
     const newBlock = newUpcomingBlocks.pop() as Block;
     newUpcomingBlocks.unshift(getRandomBlock());
+
+    if (hasCollisions(board, SHAPES[newBlock].shape, 0, 3)) {
+      setIsPlaying(false);
+      setTickSpeed(null);
+    } else {
+      setTickSpeed(TickSpeed.Normal);
+    }
 
     setScore((prevScore) => prevScore + getPoints(numCleared));
     setTickSpeed(TickSpeed.Normal);
@@ -161,6 +168,7 @@ export function useTetris() {
     startGame,
     isPlaying,
     score,
+    upcomingBlocks,
   };
 }
 
